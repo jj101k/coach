@@ -30,8 +30,8 @@ class SimpleAppTest extends \PHPUnit\Framework\TestCase {
         ]);
         ob_end_flush();
         $this->assertSame(
-            $written,
             "Hello World",
+            $written,
             "Capitalise filter ran correctly"
         );
         $written = "";
@@ -45,8 +45,8 @@ class SimpleAppTest extends \PHPUnit\Framework\TestCase {
         ]);
         ob_end_flush();
         $this->assertSame(
-            $written,
             "Bonjour world",
+            $written,
             "Unfiltered endpoints are unchanged"
         );
     }
