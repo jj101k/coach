@@ -10,6 +10,24 @@ class LocalService extends \Minibus\Service {
     private $app;
 
     /**
+     * @inheritdoc
+     */
+    protected function getAttachDepth(): int {
+        return 1;
+    }
+
+    /**
+     * Returns a URI object for the root of the service to proxy to. This must
+     * include a trailing slash.
+     *
+     * @return \Psr\Http\Message\UriInterface
+     */
+    protected function getRootUri(): \Psr\Http\Message\UriInterface {
+        return (new \Celery\Uri())
+            ->withFullURL("http://localhost/");
+    }
+
+    /**
      * Builds the object
      */
     public function __construct() {

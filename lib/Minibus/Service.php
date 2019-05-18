@@ -13,6 +13,22 @@ abstract class Service {
     protected $versions = [];
 
     /**
+     * Returns the depth at which this service is attached, eg. if it's on "/"
+     * it's 0, or on "/foo/bar" it's 2. Usually this would be 1.
+     *
+     * @return int
+     */
+    abstract protected function getAttachDepth(): int;
+
+    /**
+     * Returns a URI object for the root of the service to proxy to. This must
+     * include a trailing slash.
+     *
+     * @return \Psr\Http\Message\UriInterface
+     */
+    abstract protected function getRootUri(): \Psr\Http\Message\UriInterface;
+
+    /**
      * Attaches all the endpoints to the given app
      *
      * @param \Celery\App $app
@@ -43,6 +59,27 @@ abstract class Service {
     public function proxyRequest(
         \Psr\Http\Message\ServerRequestInterface $request
     ): \Psr\Http\Message\ResponseInterface {
-        throw new \Exception("Not implemented");
+        $depth = $this->getAttachDepth() + 1;
+        $root_uri = $this->getRootUri();
+        return \CurlPsr\Handler::run(
+            $request->withUri(
+                $root_uri
+                    ->withPath(
+                        preg_replace(
+                            "#^" . str_repeat("/[^/]+", $depth) . "/#",
+                            $root_uri->getPath(),
+                            $request->getUri()->getPath()
+                        )
+                    )
+                    ->withFragment(
+                        $request->getUri()->getFragment()
+                    )
+                    ->withQuery(
+                        $request->getUri()->getQuery()
+                    )
+            ),
+            true,
+            10000
+        );
     }
 }
