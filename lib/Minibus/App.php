@@ -15,7 +15,7 @@ class App {
         $this->app->get("/", [$this, "indexPage"]);
     }
     public function addService($service) {
-        $this->app->group("/{$service->getName()}", function($group_app) use ($service) {
+        $this->getApp()->group("/{$service->getName()}", function($group_app) use ($service) {
             $service->attach($group_app);
         });
     }
@@ -23,6 +23,6 @@ class App {
         return $this->app;
     }
     public function run($silent, $server_params = null) {
-        $this->app->run($silent, $server_params);
+        $this->getApp()->run($silent, $server_params);
     }
 }
