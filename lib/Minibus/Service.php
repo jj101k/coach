@@ -83,6 +83,6 @@ abstract class Service {
             ),
             true,
             10000
-        );
+        )->withoutHeader("Transfer-Encoding");
     }
 }
