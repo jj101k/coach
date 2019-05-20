@@ -4,6 +4,11 @@ namespace Minibus;
  *
  */
 class App {
+    /**
+     * @property \Celery\App
+     */
+    private $app;
+
     public function indexPage($request, $response) {
         $response->getBody()->write(
             "This is a web service, it should be used from properly configured client code only."
