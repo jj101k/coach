@@ -55,10 +55,6 @@ class LocalService extends \Minibus\Service {
     public function proxyRequest(
         \Psr\Http\Message\ServerRequestInterface $request
     ): \Psr\Http\Message\ResponseInterface {
-        return $this->app->handleRequest($request->withUri(
-            $request->getUri()->withPath(
-                preg_replace("#^/[^/]+/[^/]+#", "", $request->getUri()->getPath())
-            )
-        ));
+        return $this->app->handleRequest($this->forwardedRequest($request));
     }
 }

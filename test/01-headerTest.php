@@ -5,8 +5,8 @@ require_once "vendor/autoload.php";
  * of headers.
  */
 class HeaderTest extends \PHPUnit\Framework\TestCase {
+    private $forwarded = null;
     private $headersOut = null;
-    private $headersSeen = null;
     private $headersSent = null;
 
     /**
@@ -42,7 +42,7 @@ class HeaderTest extends \PHPUnit\Framework\TestCase {
         $bus->addService(new \MinibusTest\LocalService());
 
         $bus->getApp()->get("/hello/{name}", function($request, $response, $args) {
-            $this->headersSeen = $request->getHeaders();
+            $this->forwarded = $request->getHeaderLine("Forwarded");
             $response->getBody()->write("Hello {$args["name"]}");
             $response = $response->withHeader("X-Y-Z", "a-b-c");
             $this->headersSent = $response->getHeaders();
@@ -53,11 +53,12 @@ class HeaderTest extends \PHPUnit\Framework\TestCase {
             "REQUEST_METHOD" => "GET",
             "REQUEST_URI" => "/local/master/hello/world",
             "HTTP_FORWARDED" => "for=1.2.3.4",
+            "REMOTE_ADDR" => "5.6.7.8",
         ]);
         ob_end_flush();
         $this->assertSame(
-            $this->headersSeen,
-            ["Forwarded" => ["for=1.2.3.4"]],
+            $this->forwarded,
+            "for=1.2.3.4, for=5.6.7.8",
             "Headers retained correctly on the way in"
         );
         $headers = [];

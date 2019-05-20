@@ -19,6 +19,48 @@ abstract class Service {
     protected $versions = [];
 
     /**
+     * Turns an input ServerRequest into an output Request
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request
+     * @return \Psr\Http\Message\RequestInterface
+     */
+    protected function forwardedRequest(
+        \Psr\Http\Message\ServerRequestInterface $request
+    ): \Psr\Http\Message\RequestInterface {
+        $depth = $this->getAttachDepth() + 1;
+        $root_uri = $this->getRootUri();
+
+        $request = $request->withUri(
+            $root_uri
+                ->withPath(
+                    preg_replace(
+                        substr($root_uri->getPath(), -1) == "/" ?
+                            "#^" . str_repeat("/[^/]+", $depth) . "/#" :
+                            "#^" . str_repeat("/[^/]+", $depth) . "#",
+                        $root_uri->getPath(),
+                        $request->getUri()->getPath()
+                    )
+                )
+                ->withFragment(
+                    $request->getUri()->getFragment()
+                )
+                ->withQuery(
+                    $request->getUri()->getQuery()
+                )
+        );
+        $client_addr = @$request->getServerParams()["REMOTE_ADDR"];
+        if($client_addr) {
+            $request = $request->withAddedHeader(
+                "Forwarded",
+                preg_match("/:/", $client_addr) ?
+                    "for=\"[{$client_addr}]\"" :
+                    "for={$client_addr}"
+            );
+        }
+        return $request;
+    }
+
+    /**
      * Returns the depth at which this service is attached, eg. if it's on "/"
      * it's 0, or on "/foo/bar" it's 2. Usually this would be 1.
      *
@@ -66,27 +108,8 @@ abstract class Service {
     public function proxyRequest(
         \Psr\Http\Message\ServerRequestInterface $request
     ): \Psr\Http\Message\ResponseInterface {
-        $depth = $this->getAttachDepth() + 1;
-        $root_uri = $this->getRootUri();
         return \CurlPsr\Handler::run(
-            $request->withUri(
-                $root_uri
-                    ->withPath(
-                        preg_replace(
-                            substr($root_uri->getPath(), -1) == "/" ?
-                                "#^" . str_repeat("/[^/]+", $depth) . "/#" :
-                                "#^" . str_repeat("/[^/]+", $depth) . "#",
-                            $root_uri->getPath(),
-                            $request->getUri()->getPath()
-                        )
-                    )
-                    ->withFragment(
-                        $request->getUri()->getFragment()
-                    )
-                    ->withQuery(
-                        $request->getUri()->getQuery()
-                    )
-            ),
+            $this->forwardedRequest($request),
             $this->verifyTls,
             10000
         )->withoutHeader("Transfer-Encoding");
