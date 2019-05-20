@@ -8,6 +8,12 @@ namespace Minibus;
  */
 abstract class Service {
     /**
+     * @property bool If this is false, any certificates on HTTPS won't be
+     *  verified (may be useful during testing).
+     */
+    protected $verifyTls = true;
+
+    /**
      * @property array Version strings mapped to \Minibus\ServiceVersion objects
      */
     protected $versions = [];
@@ -81,7 +87,7 @@ abstract class Service {
                         $request->getUri()->getQuery()
                     )
             ),
-            true,
+            $this->verifyTls,
             10000
         )->withoutHeader("Transfer-Encoding");
     }
