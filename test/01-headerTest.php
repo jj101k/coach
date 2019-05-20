@@ -5,8 +5,14 @@ require_once "vendor/autoload.php";
  * of headers.
  */
 class HeaderTest extends \PHPUnit\Framework\TestCase {
+    /**
+     * @property string|null
+     */
     private $forwarded = null;
-    private $headersOut = null;
+
+    /**
+     * @property array|null
+     */
     private $headersSent = null;
 
     /**
