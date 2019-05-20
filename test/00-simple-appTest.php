@@ -9,7 +9,20 @@ class SimpleAppTest extends \PHPUnit\Framework\TestCase {
      */
     public function test() {
         require_once "test/lib/LocalService.php";
-        $bus = new \Minibus\App();
+        $app = $this
+            ->getMockBuilder("\Celery\App")
+            ->setMethods(["sendHeaders"])
+            ->getMock();
+
+        $app->method("sendHeaders")->will(
+            $this->returnCallback(function() {})
+        );
+        $bus = $this
+            ->getMockBuilder("\Minibus\App")
+            ->setMethods(["getApp"])
+            ->getMock();
+        $bus->method("getApp")->willReturn($app);
+
         $bus->addService(new \MinibusTest\LocalService());
         $bus->getApp()->get("/hello/{name}", function($request, $response, $args) {
             $response->getBody()->write("Hello {$args["name"]}");
