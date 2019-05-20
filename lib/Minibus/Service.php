@@ -21,8 +21,9 @@ abstract class Service {
     abstract protected function getAttachDepth(): int;
 
     /**
-     * Returns a URI object for the root of the service to proxy to. This must
-     * include a trailing slash.
+     * Returns a URI object for the root of the service to proxy to. If this
+     * includes a trailing slash, only URLs which have a / following the version
+     * will be mapped.
      *
      * @return \Psr\Http\Message\UriInterface
      */
@@ -66,7 +67,9 @@ abstract class Service {
                 $root_uri
                     ->withPath(
                         preg_replace(
-                            "#^" . str_repeat("/[^/]+", $depth) . "/#",
+                            substr($root_uri->getPath(), -1) == "/" ?
+                                "#^" . str_repeat("/[^/]+", $depth) . "/#" :
+                                "#^" . str_repeat("/[^/]+", $depth) . "#",
                             $root_uri->getPath(),
                             $request->getUri()->getPath()
                         )
