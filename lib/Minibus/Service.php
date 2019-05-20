@@ -57,7 +57,10 @@ abstract class Service {
                     "for={$client_addr}"
             );
         }
-        return $request;
+        return $request
+            ->withoutHeader("X-Forwarded-For")
+            ->withoutHeader("X-Forwarded-Host")
+            ->withoutHeader("X-Forwarded-Proto");
     }
 
     /**
