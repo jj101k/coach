@@ -60,7 +60,8 @@ abstract class Service {
         return $request
             ->withoutHeader("X-Forwarded-For")
             ->withoutHeader("X-Forwarded-Host")
-            ->withoutHeader("X-Forwarded-Proto");
+            ->withoutHeader("X-Forwarded-Proto")
+            ->withHeader("Connection", "close");
     }
 
     /**
@@ -115,6 +116,8 @@ abstract class Service {
             $this->forwardedRequest($request),
             $this->verifyTls,
             60000
-        )->withoutHeader("Transfer-Encoding");
+        )
+            ->withoutHeader("Transfer-Encoding")
+            ->withoutHeader("Connection");
     }
 }
