@@ -114,7 +114,7 @@ abstract class Service {
         return \CurlPsr\Handler::run(
             $this->forwardedRequest($request),
             $this->verifyTls,
-            10000
+            60000
         )->withoutHeader("Transfer-Encoding");
     }
 }
