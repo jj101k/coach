@@ -1,5 +1,5 @@
 <?php
-namespace Minibus;
+namespace Coach;
 /**
  * The main bus object. This will set up linkage to all the service objects.
  */
@@ -37,10 +37,10 @@ class App {
     /**
      * Adds the service, connecting it to the PSR-7 app
      *
-     * @param \Minibus\Service $service
+     * @param \Coach\Service $service
      * @return self
      */
-    public function addService(\Minibus\Service $service): self {
+    public function addService(\Coach\Service $service): self {
         $this->getApp()->group("/{$service->getName()}", function($group_app) use ($service) {
             $service->attach($group_app);
         });

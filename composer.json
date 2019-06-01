@@ -1,5 +1,5 @@
 {
-    "name": "jdriscoll/minibus",
+    "name": "jdriscoll/coach",
     "description": "A lightweight service bus",
     "license": "BSD-2-Clause",
     "require": {
@@ -9,7 +9,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Minibus\\": "lib/Minibus/"
+            "Coach\\": "lib/Coach/"
         }
     },
     "scripts": {

@@ -18,12 +18,12 @@ class SimpleAppTest extends \PHPUnit\Framework\TestCase {
             $this->returnCallback(function() {})
         );
         $bus = $this
-            ->getMockBuilder("\Minibus\App")
+            ->getMockBuilder("\Coach\App")
             ->setMethods(["getApp"])
             ->getMock();
         $bus->method("getApp")->willReturn($app);
 
-        $bus->addService(new \MinibusTest\LocalService());
+        $bus->addService(new \CoachTest\LocalService());
         $bus->getApp()->get("/hello/{name}", function($request, $response, $args) {
             $response->getBody()->write("Hello {$args["name"]}");
             return $response;

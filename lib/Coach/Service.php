@@ -1,5 +1,5 @@
 <?php
-namespace Minibus;
+namespace Coach;
 /**
  * This handles what happens for a service. This just serves as a wrapper for
  * the given service versions.
@@ -14,7 +14,7 @@ abstract class Service {
     protected $verifyTls = true;
 
     /**
-     * @property array Version strings mapped to \Minibus\ServiceVersion objects
+     * @property array Version strings mapped to \Coach\ServiceVersion objects
      */
     protected $versions = [];
 

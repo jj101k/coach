@@ -1,9 +1,9 @@
 <?php
-namespace MinibusTest\LocalService;
+namespace CoachTest\LocalService;
 /**
  * This adds the wrapping fake endpoint
  */
-class Master extends \Minibus\ServiceVersion {
+class Master extends \Coach\ServiceVersion {
     /**
      * Attaches all the endpoints to the given app
      *

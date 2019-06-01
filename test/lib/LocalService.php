@@ -1,9 +1,9 @@
 <?php
-namespace MinibusTest;
+namespace CoachTest;
 /**
  * This connects to the local service!
  */
-class LocalService extends \Minibus\Service {
+class LocalService extends \Coach\Service {
     /**
      * @property \Celery\App|null
      */
@@ -32,7 +32,7 @@ class LocalService extends \Minibus\Service {
      */
     public function __construct() {
         require_once "test/lib/LocalService/Master.php";
-        $this->versions["master"] = new \MinibusTest\LocalService\Master($this);
+        $this->versions["master"] = new \CoachTest\LocalService\Master($this);
     }
     /**
      * @inheritdoc

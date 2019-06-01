@@ -41,11 +41,11 @@ class HeaderTest extends \PHPUnit\Framework\TestCase {
             })
         );
         $bus = $this
-            ->getMockBuilder("\Minibus\App")
+            ->getMockBuilder("\Coach\App")
             ->setMethods(["getApp"])
             ->getMock();
         $bus->method("getApp")->willReturn($app);
-        $bus->addService(new \MinibusTest\LocalService());
+        $bus->addService(new \CoachTest\LocalService());
 
         $bus->getApp()->get("/hello/{name}", function($request, $response, $args) {
             $this->forwarded = $request->getHeaderLine("Forwarded");
